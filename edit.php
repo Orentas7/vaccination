@@ -24,30 +24,29 @@
         
         $date = fgets(STDIN);
         $currentUser["date"] = str_replace(array("\r", "\n"), '', $date);
+        if (!preg_match("/(\d{4})[.\s]?(0[1-9]|1[012])[.\s]?(0[1-9]|[12][0-9]|3[01])/", $currentUser["date"])) {
+            fwrite(STDOUT, "\nInvalid date format\n");
+            exit();
+        }
 
         fwrite(STDOUT, "enter new time\n");
 
         $time = fgets(STDIN);
         $currentUser["time"] = str_replace(array("\r", "\n"), '', $time);
-
-        $counter = 0;
-        if (!preg_match("/(\d{4})[.\s]?(0[1-9]|1[012])[.\s]?(0[1-9]|[12][0-9]|3[01])/", $date)) {
-            fwrite(STDOUT, "\nInvalid date format\n");
-            $counter++;
-        }if (!preg_match("/(0[89]|1[0-7])[:\s](00|15|30|45)/", $time)) {
+        if (!preg_match("/(0[89]|1[0-7])[:\s](00|15|30|45)/", $currentUser["time"])) {
             fwrite(STDOUT, "\nInvalid time format\n");
-            $counter++;
+            exit();
         }
-        if ($counter) {
-            fwrite(STDOUT, "\nAre you sure you want to update you appointment? (yes/no)\n");
+        
+        fwrite(STDOUT, "\nAre you sure you want to update you appointment? (yes/no)\n");
 
-            $confirmation = fgets(STDIN);
-            
-            if (str_starts_with($confirmation, "yes")) {
-                array_push($tempArray, $currentUser);         
-                $jsonData = json_encode($tempArray);
-                file_put_contents('users.json', $jsonData);
-            }
+        $confirmation = fgets(STDIN);
+        
+        if (str_starts_with($confirmation, "yes")) {
+            array_push($tempArray, $currentUser);         
+            $jsonData = json_encode($tempArray);
+            file_put_contents('users.json', $jsonData);
         }
+        
     }
 ?>
